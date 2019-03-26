@@ -53,6 +53,7 @@ namespace joyfrog {
     type EvtAct = () => void;
 
     let btnCb: { [key: number]: EvtAct } = {};
+    let joyCb: EvtAct;
     let joyX: number;
     let joyY: number;
 
@@ -83,7 +84,7 @@ namespace joyfrog {
             v = v.substr(1, v.length - 1) + ' '
             let cmd = parseInt(seekNext())
             let arg1 = parseInt(seekNext())
-            // serial.writeString("# "+ cmd +" "+ arg1)
+            serial.writeString("# "+ cmd +" "+ arg1)
             if (cmd == 2) {
                 // serial.writeString("$ " + btnCb[arg1])
                 if (btnCb[arg1]) {
@@ -95,9 +96,17 @@ namespace joyfrog {
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }
+                if (joyCb){
+                    joyCb();
+                }
             }
         }
     })
+
+    //% shim=kittenwifi::setSerialBuffer
+    function setSerialBuffer(size: number): void {
+        return null;
+    }
 
     /**
      * Init joyfrog extension
@@ -110,6 +119,7 @@ namespace joyfrog {
             SerialPin.P16,
             BaudRate.BaudRate115200
         )
+        setSerialBuffer(64);
         serial.readString()
         serial.writeString('\nJOYFROG\n')
     }
@@ -121,6 +131,12 @@ namespace joyfrog {
     //% weight=98
     export function on_btn_pressed(button: JoyBtns, handler: () => void): void {
         btnCb[button] = handler;
+    }
+
+    //% blockId=on_joystick_pushed block="on Joystick Pushed"
+    //% weight=98
+    export function on_joystick_pushed(handler: () => void): void {
+        joyCb = handler;
     }
 
     //% blockId=joystick_value block="Joystick %dir"
