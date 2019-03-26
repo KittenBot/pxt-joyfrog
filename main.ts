@@ -54,6 +54,7 @@ namespace joyfrog {
 
     let btnCb: { [key: number]: EvtAct } = {};
     let joyCb: EvtAct;
+    let infraRxCb: (data: string) => void;
     let joyX: number;
     let joyY: number;
 
@@ -83,14 +84,14 @@ namespace joyfrog {
         if (v.charAt(0) == 'M') {
             v = v.substr(1, v.length - 1) + ' '
             let cmd = parseInt(seekNext())
-            let arg1 = parseInt(seekNext())
-            serial.writeString("# "+ cmd +" "+ arg1)
             if (cmd == 2) {
                 // serial.writeString("$ " + btnCb[arg1])
+                let arg1 = parseInt(seekNext())
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }
             } else if (cmd == 1) {
+                let arg1 = parseInt(seekNext())
                 joyX = parseInt(seekNext())
                 joyY = parseInt(seekNext())
                 if (btnCb[arg1]) {
@@ -98,6 +99,10 @@ namespace joyfrog {
                 }
                 if (joyCb){
                     joyCb();
+                }
+            } else if (cmd == 4){
+                if (infraRxCb){
+                    infraRxCb(seekNext());
                 }
             }
         }
@@ -134,16 +139,32 @@ namespace joyfrog {
     }
 
     //% blockId=on_joystick_pushed block="on Joystick Pushed"
-    //% weight=98
+    //% weight=97
     export function on_joystick_pushed(handler: () => void): void {
         joyCb = handler;
     }
 
     //% blockId=joystick_value block="Joystick %dir"
-    //% weight=91
+    //% weight=96
     //% blockGap=50
     export function joystick_value(dir: JoyDirection): number {
         return dir == JoyDirection.X ? joyX : joyY;
+    }
+
+    //% blockId=on_infra_data block="on Infra Rx"
+    //% weight=89
+    export function on_infra_data(handler: (data: string) => void): void {
+        infraRxCb = handler;
+    }
+
+    /**
+     * Send infra data
+     * @param data Data to send; eg: ff906f
+    */
+    //% blockId=infra_send block="Infra Tx %data"
+    //% weight=89
+    export function infra_send(data: string): void {
+        serial.writeLine("M3 "+data)
     }
 
 }

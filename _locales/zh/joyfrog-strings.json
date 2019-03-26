@@ -1,0 +1,8 @@
+{
+    "joyfrog.joyfrog_init|block": "青蛙手柄 初始化",
+    "joyfrog.on_btn_pressed|block": "当按钮 |%button 按下",
+    "joyfrog.on_joystick_pushed|block": "当推动摇杆",
+    "joyfrog.joystick_value|block": "摇杆值 %dir",
+    "joyfrog.on_infra_data|block": "当收到红外数据",
+    "joyfrog.infra_send|block": "红外发送 %data"
+}
