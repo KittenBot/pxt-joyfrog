@@ -50,17 +50,25 @@ namespace joyfrog {
         //% block=8
         BTN_8 = 0x25
     }
-    
+
     export enum JoyPort {
         //% block=Port3
         PORT_3 = 1,
         //% block=Port4
         PORT_4 = 2,
     }
-    
+
     type EvtAct = () => void;
 
-    let btnCb: { [key: number]: EvtAct } = {};
+    // let btnCb: { [key: number]: EvtAct } = {};
+
+    let btnCb: KeyHandler[] = []
+
+    export class KeyHandler {
+        key: number;
+        fn: () => void;
+    }
+
     let joyCb: EvtAct;
     let infraRxCb: (data: string) => void;
     let digiReadCb: (data: number) => void;
@@ -96,32 +104,46 @@ namespace joyfrog {
             if (cmd == 2) {
                 // serial.writeString("$ " + btnCb[arg1])
                 let arg1 = parseInt(seekNext())
+                for (let i=0;i<btnCb.length;i++){
+                    if (btnCb[i].key == arg1){
+                        btnCb[i].fn()
+                    }
+                }
+                /*
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }
+                */
             } else if (cmd == 1) {
                 let arg1 = parseInt(seekNext())
                 joyX = -255 - parseInt(seekNext())
                 joyY = -255 - parseInt(seekNext())
+                /*
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }
-                if (joyCb){
+                */
+                for (let i = 0; i < btnCb.length; i++) {
+                    if (btnCb[i].key == arg1) {
+                        btnCb[i].fn()
+                    }
+                }
+                if (joyCb) {
                     joyCb();
                 }
-            } else if (cmd == 4){
-                if (infraRxCb){
+            } else if (cmd == 4) {
+                if (infraRxCb) {
                     infraRxCb(seekNext());
                 }
-            } else if (cmd == 8){
+            } else if (cmd == 8) {
                 let arg1 = parseInt(seekNext())
                 let arg2 = parseInt(seekNext())
-                if (digiReadCb){
+                if (digiReadCb) {
                     digiReadCb(arg2);
                 }
-            } else if (cmd == 11){
+            } else if (cmd == 11) {
                 let arg1 = parseInt(seekNext())
-                if (analogReadCb){
+                if (analogReadCb) {
                     analogReadCb(arg1);
                 }
             }
@@ -160,7 +182,11 @@ namespace joyfrog {
     //% blockId=on_btn_pressed block="on Button |%button pressed"
     //% weight=98
     export function on_btn_pressed(button: JoyBtns, handler: () => void): void {
-        btnCb[button] = handler;
+        // btnCb[button] = handler;
+        let btnHandler = new KeyHandler()
+        btnHandler.fn = handler
+        btnHandler.key = button
+        btnCb.push(btnHandler)
     }
 
     //% blockId=on_joystick_pushed block="on Joystick Pushed"
@@ -190,52 +216,52 @@ namespace joyfrog {
     //% weight=89
     //% blockGap=50
     export function infra_send(data: string): void {
-        serial.writeLine("M3 "+data)
+        serial.writeLine("M3 " + data)
     }
 
     //% blockId=digi_write block="Digital Write %port Value|%value"
     //% weight=79
     export function digi_write(port: JoyPort, value: number): void {
-        serial.writeLine("M9 "+port+" "+value+"\n")
+        serial.writeLine("M9 " + port + " " + value + "\n")
     }
-    
+
     //% blockId=digi_read block="Digital Read %port"
     //% weight=77
     export function digi_read(port: JoyPort): void {
-        serial.writeLine("M8 "+port+" \n")
+        serial.writeLine("M8 " + port + " \n")
     }
-    
+
     //% blockId=on_digi_read block="on Digital Read"
     //% weight=76
     //% blockGap=50
     export function on_digi_read(handler: (data: number) => void): void {
         digiReadCb = handler;
     }
-    
+
     //% blockId=analog_read block="Analog Read %port"
     //% weight=74
     export function analog_read(port: JoyPort): void {
-        serial.writeLine("M11 "+port+" \n")
+        serial.writeLine("M11 " + port + " \n")
     }
-    
+
     //% blockId=on_analog_read block="on Analog Read"
     //% weight=72
     //% blockGap=50
     export function on_analog_read(handler: (data: number) => void): void {
         analogReadCb = handler;
     }
-    
+
     //% blockId=port_pwm block="Port %port PWM Pulse|%pulse (us) Period|%period (us)"
     //% weight=72
     export function port_pwm(port: JoyPort, pulse: number, period: number): void {
-        serial.writeLine("M12 "+port+" "+pulse+" "+period+"\n")
+        serial.writeLine("M12 " + port + " " + pulse + " " + period + "\n")
     }
-    
+
     //% blockId=port_servo block="Port %port Servo Degree|%degree"
     //% weight=72
     //% blockGap=50
-    export function port_servo(port: JoyPort,degree: number): void {
-        const t0 = Math.round(degree*50/9+1000);
-        serial.writeLine("M12 "+port+" "+t0+" 50000\n")
+    export function port_servo(port: JoyPort, degree: number): void {
+        const t0 = Math.round(degree * 50 / 9 + 1000);
+        serial.writeLine("M12 " + port + " " + t0 + " 50000\n")
     }
 }
