@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace kittenwifi {
+namespace joyfrog {
 
     //%
     void setSerialBuffer(int size) {
@@ -13,4 +13,4 @@ namespace kittenwifi {
     
     
     
-} // namespace kittenwifi
+} // namespace joyfrog

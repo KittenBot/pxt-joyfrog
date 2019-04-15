@@ -50,11 +50,21 @@ namespace joyfrog {
         //% block=8
         BTN_8 = 0x25
     }
+    
+    export enum JoyPort {
+        //% block=Port3
+        PORT_3 = 1,
+        //% block=Port4
+        PORT_4 = 2,
+    }
+    
     type EvtAct = () => void;
 
     let btnCb: { [key: number]: EvtAct } = {};
     let joyCb: EvtAct;
     let infraRxCb: (data: string) => void;
+    let digiReadCb: (data: number) => void;
+    let analogReadCb: (data: number) => void;
     let joyX: number;
     let joyY: number;
 
@@ -76,7 +86,6 @@ namespace joyfrog {
         return '';
     }
 
-
     serial.onDataReceived('\n', function () {
         v = serial.readString()
         let argv: string[] = []
@@ -92,8 +101,8 @@ namespace joyfrog {
                 }
             } else if (cmd == 1) {
                 let arg1 = parseInt(seekNext())
-                joyX = parseInt(seekNext())
-                joyY = parseInt(seekNext())
+                joyX = -255 - parseInt(seekNext())
+                joyY = -255 - parseInt(seekNext())
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }
@@ -104,11 +113,22 @@ namespace joyfrog {
                 if (infraRxCb){
                     infraRxCb(seekNext());
                 }
+            } else if (cmd == 8){
+                let arg1 = parseInt(seekNext())
+                let arg2 = parseInt(seekNext())
+                if (digiReadCb){
+                    digiReadCb(arg2);
+                }
+            } else if (cmd == 11){
+                let arg1 = parseInt(seekNext())
+                if (analogReadCb){
+                    analogReadCb(arg1);
+                }
             }
         }
     })
 
-    //% shim=kittenwifi::setSerialBuffer
+    //% shim=joyfrog::setSerialBuffer
     function setSerialBuffer(size: number): void {
         return null;
     }
@@ -124,9 +144,14 @@ namespace joyfrog {
             SerialPin.P16,
             BaudRate.BaudRate115200
         )
+        basic.pause(100)
         setSerialBuffer(64);
         serial.readString()
-        serial.writeString('\nJOYFROG\n')
+        serial.writeString('\n\n')
+        basic.pause(100)
+        serial.writeString("M0\n")
+        basic.pause(100)
+        serial.writeString('M7 14\n')
     }
 
     /**
@@ -163,8 +188,54 @@ namespace joyfrog {
     */
     //% blockId=infra_send block="Infra Tx %data"
     //% weight=89
+    //% blockGap=50
     export function infra_send(data: string): void {
         serial.writeLine("M3 "+data)
     }
 
+    //% blockId=digi_write block="Digital Write %port Value|%value"
+    //% weight=79
+    export function digi_write(port: JoyPort, value: number): void {
+        serial.writeLine("M9 "+port+" "+value+"\n")
+    }
+    
+    //% blockId=digi_read block="Digital Read %port"
+    //% weight=77
+    export function digi_read(port: JoyPort): void {
+        serial.writeLine("M8 "+port+" \n")
+    }
+    
+    //% blockId=on_digi_read block="on Digital Read"
+    //% weight=76
+    //% blockGap=50
+    export function on_digi_read(handler: (data: number) => void): void {
+        digiReadCb = handler;
+    }
+    
+    //% blockId=analog_read block="Analog Read %port"
+    //% weight=74
+    export function analog_read(port: JoyPort): void {
+        serial.writeLine("M11 "+port+" \n")
+    }
+    
+    //% blockId=on_analog_read block="on Analog Read"
+    //% weight=72
+    //% blockGap=50
+    export function on_analog_read(handler: (data: number) => void): void {
+        analogReadCb = handler;
+    }
+    
+    //% blockId=port_pwm block="Port %port PWM Pulse|%pulse (us) Period|%period (us)"
+    //% weight=72
+    export function port_pwm(port: JoyPort, pulse: number, period: number): void {
+        serial.writeLine("M12 "+port+" "+pulse+" "+period+"\n")
+    }
+    
+    //% blockId=port_servo block="Port %port Servo Degree|%degree"
+    //% weight=72
+    //% blockGap=50
+    export function port_servo(port: JoyPort,degree: number): void {
+        const t0 = Math.round(degree*50/9+1000);
+        serial.writeLine("M12 "+port+" "+t0+" 50000\n")
+    }
 }
