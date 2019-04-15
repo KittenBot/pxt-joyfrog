@@ -4,5 +4,12 @@
     "joyfrog.on_joystick_pushed|block": "当推动摇杆",
     "joyfrog.joystick_value|block": "摇杆值 %dir",
     "joyfrog.on_infra_data|block": "当收到红外数据",
-    "joyfrog.infra_send|block": "红外发送 %data"
+    "joyfrog.infra_send|block": "红外发送 %data",
+    "joyfrog.digi_write|block": "数字写 %port 值|%value",
+    "joyfrog.digi_read|block": "数字读 %port",
+    "joyfrog.on_digi_read|block": "当数字读返回",
+    "joyfrog.analog_read|block": "模拟读 %port",
+    "joyfrog.on_analog_read|block": "当模拟读",
+    "joyfrog.port_pwm|block": "模拟写 %port PWM 脉宽|%pulse (us) 周期|%period (us)",
+    "joyfrog.port_servo|block": "模拟写 %port 舵机 角度|%degree"
 }
