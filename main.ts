@@ -60,9 +60,9 @@ namespace joyfrog {
 
     type EvtAct = () => void;
 
-    // let btnCb: { [key: number]: EvtAct } = {};
+    let btnCb: { [key: number]: EvtAct } = {};
 
-    let btnCb: KeyHandler[] = []
+    // let btnCb: KeyHandler[] = []
 
     export class KeyHandler {
         key: number;
@@ -104,25 +104,24 @@ namespace joyfrog {
             if (cmd == 2) {
                 // serial.writeString("$ " + btnCb[arg1])
                 let arg1 = parseInt(seekNext())
-                for (let i=0;i<btnCb.length;i++){
-                    if (btnCb[i].key == arg1){
+                /*
+                for (let i = 0; i < btnCb.length; i++) {
+                    if (btnCb[i].key == arg1) {
                         btnCb[i].fn()
                     }
                 }
-                /*
+                */
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }
-                */
             } else if (cmd == 1) {
                 let arg1 = parseInt(seekNext())
                 joyX = -255 - parseInt(seekNext())
                 joyY = -255 - parseInt(seekNext())
-                /*
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
-                }
-                */
+                }                
+                /*
                 for (let i = 0; i < btnCb.length; i++) {
                     if (btnCb[i].key == arg1) {
                         btnCb[i].fn()
@@ -131,6 +130,7 @@ namespace joyfrog {
                 if (joyCb) {
                     joyCb();
                 }
+                */
             } else if (cmd == 4) {
                 if (infraRxCb) {
                     infraRxCb(seekNext());
@@ -167,7 +167,8 @@ namespace joyfrog {
             BaudRate.BaudRate115200
         )
         basic.pause(100)
-        setSerialBuffer(64);
+        serial.setTxBufferSize(64)
+        serial.setRxBufferSize(64)
         serial.readString()
         serial.writeString('\n\n')
         basic.pause(100)
@@ -182,11 +183,13 @@ namespace joyfrog {
     //% blockId=on_btn_pressed block="on Button |%button pressed"
     //% weight=98
     export function on_btn_pressed(button: JoyBtns, handler: () => void): void {
-        // btnCb[button] = handler;
+        btnCb[button] = handler;
+        /*
         let btnHandler = new KeyHandler()
         btnHandler.fn = handler
         btnHandler.key = button
         btnCb.push(btnHandler)
+        */
     }
 
     //% blockId=on_joystick_pushed block="on Joystick Pushed"
