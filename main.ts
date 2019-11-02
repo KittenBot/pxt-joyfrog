@@ -121,19 +121,10 @@ namespace joyfrog {
                 if (btnCb[arg1]) {
                     btnCb[arg1]();
                 }                
-                /*
-                for (let i = 0; i < btnCb.length; i++) {
-                    if (btnCb[i].key == arg1) {
-                        btnCb[i].fn()
-                    }
-                }
-                if (joyCb) {
-                    joyCb();
-                }
-                */
             } else if (cmd == 4) {
+                let infraData = seekNext()
                 if (infraRxCb) {
-                    infraRxCb(seekNext());
+                    infraRxCb(infraData);
                 }
             } else if (cmd == 8) {
                 let arg1 = parseInt(seekNext())
@@ -192,12 +183,6 @@ namespace joyfrog {
         */
     }
 
-    //% blockId=on_joystick_pushed block="on Joystick Pushed"
-    //% weight=97
-    export function on_joystick_pushed(handler: () => void): void {
-        joyCb = handler;
-    }
-
     //% blockId=joystick_value block="Joystick %dir"
     //% weight=96
     //% blockGap=50
@@ -213,13 +198,13 @@ namespace joyfrog {
 
     /**
      * Send infra data
-     * @param data Data to send; eg: ff906f
+     * @param data Data to send; eg: ff906fab
     */
     //% blockId=infra_send block="Infra Tx %data"
     //% weight=89
     //% blockGap=50
     export function infra_send(data: string): void {
-        serial.writeLine("M3 " + data)
+        serial.writeLine(`M3 ${data}`)
     }
 
     //% blockId=digi_write block="Digital Write %port Value|%value"
