@@ -1,6 +1,6 @@
 {
     "name": "joyfrog",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Extension for Kittenbot Joystick Frog",
     "license": "MIT",
     "dependencies": {
@@ -9,7 +9,8 @@
     "files": [
         "README.md",
         "main.ts",
-        "_locales/zh/joyfrog-strings.json"
+        "_locales/zh-cn/joyfrog-strings.json",
+        "_locales/zh-tw/joyfrog-strings.json"
     ],
     "public": true,
     "preferredEditor": "tsprj"

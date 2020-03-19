@@ -1,0 +1,15 @@
+{
+    "joyfrog.joyfrog_init|block": "青蛙手柄 初始化",
+    "joyfrog.on_btn_pressed|block": "當按鈕 |%button 按下",
+    "joyfrog.on_joystick_pushed|block": "當推動搖桿",
+    "joyfrog.joystick_value|block": "搖桿值 %dir",
+    "joyfrog.on_infra_data|block": "接收到紅外資料",
+    "joyfrog.infra_send|block": "紅外發送 %data",
+    "joyfrog.digi_write|block": "數位寫 %port 值|%value",
+    "joyfrog.digi_read|block": "數位讀 %port",
+    "joyfrog.on_digi_read|block": "數位讀返回",
+    "joyfrog.analog_read|block": "類比讀 %port",
+    "joyfrog.on_analog_read|block": "類比讀",
+    "joyfrog.port_pwm|block": "類比寫 %port PWM 脈寬|%pulse (us) 週期|%period (us)",
+    "joyfrog.port_servo|block": "類比寫 %port 舵機 角度|%degree"
+}
