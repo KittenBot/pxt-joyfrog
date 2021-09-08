@@ -1,6 +1,6 @@
-# JoyForg
+# JoyFrog
 
-Joyfrog is a piece of cute programming hardware that looks like a frog. It is covered by an environmentally friendly silicone case which makes it comfortable to grip and hold. It can be used as a remote control in combination with Micro:bit.
+Joyfrog is a piece of cute programming hardware that looks like a frog. It is covered by an environmentally friendly silicone case which makes it comfortable to grip and hold. It can be used as a remote control in combination with micro:bit.
 We designed it this way in order to attract children's attention with the cute look, so that they can have fun and learn knowledge of programming at the same time.
 
 ![joyfrog](joyfrog.png)
@@ -17,7 +17,7 @@ We designed it this way in order to attract children's attention with the cute l
 ----------
 ## Basic usage
 
-* Simple control of Joyforg
+* Simple control of JoyFrog
 
 ```blocks
     joyfrog.on_btn_pressed(joyfrog.JoyBtns.BTN_UP, function () {
