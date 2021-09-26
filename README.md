@@ -7,7 +7,7 @@ We designed it this way in order to attract children's attention with the cute l
 
 ## Feature
 
-* This extension is designed to programme and drive the JoyFrog for micro:bit, You can [get Joyfrog From KittenBot](https://item.taobao.com/item.htm?spm=a1z10.3-c-s.w4002-21482550023.32.42a95d5fcvWbCF&id=592303306447)
+* This extension is designed to programme and drive the JoyFrog for micro:bit, You can [get Joyfrog From KittenBot](https://www.kittenbot.cc/collections/frontpage/products/joyfrog-programming-console)
 
 
 
